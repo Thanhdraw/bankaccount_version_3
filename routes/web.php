@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Livewire\AccountTable;
+use App\Livewire\AccountCreate;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,4 +24,10 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+
+
+Route::get('/accounts', AccountTable::class)->name('accounts.index');
+Route::get('/accounts/create', AccountCreate::class)->name('accounts.create');
+
+
+require __DIR__ . '/auth.php';
