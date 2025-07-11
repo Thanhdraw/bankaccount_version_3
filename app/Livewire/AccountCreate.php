@@ -10,7 +10,7 @@ class AccountCreate extends Component
     public $account_holder_name;
     public $type;
     public $initial_deposit;
-    protected string $layout = 'layouts.app';
+
 
 
     public function createAccount()
