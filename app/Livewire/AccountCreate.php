@@ -27,7 +27,7 @@ class AccountCreate extends Component
                 'account_holder_name' => $this->account_holder_name,
                 'type' => $this->type,
                 'balance' => $this->initial_deposit,
-                'status' => 1,
+                'status' => 10,
             ]);
 
             $this->dispatch(
@@ -37,7 +37,7 @@ class AccountCreate extends Component
             );
 
 
-            $this->reset(); // reset input sau khi tạo thành công
+            $this->reset();
             $this->redirect(route('accounts.index'));
 
         } catch (\Exception $e) {
@@ -53,7 +53,7 @@ class AccountCreate extends Component
     public function render()
     {
         return view('livewire.account-create')
-            ->layout('layouts.app'); // <- đúng layout bạn đã có
+            ->layout('layouts.app');
     }
 
 }
