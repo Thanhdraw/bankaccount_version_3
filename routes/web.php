@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,4 +24,18 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+Route::prefix('account')
+    ->name('account.')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::get('/', [AccountController::class, 'index'])->name('index');
+        Route::get('/create', [AccountController::class, 'create'])->name('create');
+        Route::post('/store', [AccountController::class, 'store'])->name('store');
+        Route::get('/{id}', [AccountController::class, 'show'])->name('show');
+        Route::get('edit/{id}', [AccountController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [AccountController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
+    });
+
+
+require __DIR__ . '/auth.php';

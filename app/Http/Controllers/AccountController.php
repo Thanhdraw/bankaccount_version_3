@@ -1,0 +1,99 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\StatusAccount;
+use App\Enums\TypeAccount;
+use App\Http\Requests\CreateAccount;
+use App\Models\Account;
+use App\Services\Account\AccountService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
+
+class AccountController extends Controller
+{
+    public function __construct(
+        protected Account $account,
+        protected AccountService $accountService
+    ) {
+    }
+
+    public function index()
+    {
+        $accounts = $this->account->all();
+
+        return view('account.index')
+
+            ->with('accounts', $accounts);
+    }
+
+    public function show($id)
+    {
+        $account = $this->account->findOrFail($id);
+
+        return view('account.show')->with('account', $account);
+    }
+
+    public function create()
+    {
+
+        return view('account.create')
+
+            ->with('types', TypeAccount::asSelectArray());
+    }
+
+    public function store(CreateAccount $request)
+    {
+        $validated = $request->validated();
+
+        $this->accountService->createAccount($validated);
+
+        return redirect()->route('account.index')
+
+            ->with('success', 'Tạo tài khoản thành công.');
+    }
+
+    public function edit($id)
+    {
+        $account = $this->account->findOrFail($id);
+
+        return view('account.edit')
+
+            ->with('account', $account)
+
+            ->with('types', TypeAccount::asSelectArray());
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = $request->validate([
+            'account_holder_name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+            'type' => ['required', new Enum(TypeAccount::class)],
+            'status' => ['required', new Enum(StatusAccount::class)],
+            'balance' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $account = Account::findOrFail($id);
+
+        $account->update($data);
+
+        return redirect()
+
+            ->route('account.index')
+
+            ->with('success', 'Cập nhật tài khoản thành công.');
+    }
+
+    public function delete($id)
+    {
+        $data = $this->account->findOrFail($id);
+
+        $data->delete();
+
+        return redirect()->back()->with('success', 'Xoá thành công');
+    }
+}
