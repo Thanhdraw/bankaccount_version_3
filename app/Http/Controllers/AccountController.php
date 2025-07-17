@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\StatusAccount;
 use App\Enums\TypeAccount;
 use App\Http\Requests\CreateAccount;
+use App\Http\Requests\DepositRequest;
 use App\Models\Account;
 use App\Services\Account\AccountService;
 use Illuminate\Http\Request;
@@ -95,5 +96,20 @@ class AccountController extends Controller
         $data->delete();
 
         return redirect()->back()->with('success', 'Xoá thành công');
+    }
+
+    public function deposit(DepositRequest $request, $accountNumber)
+    {
+        $validated = $request->validated();
+
+        $account = $this->accountService->deposit(
+            $accountNumber,
+            (float) $validated['deposit_amount']
+        );
+
+        if ($account) {
+            return redirect()->back()->with('success', "Nap tien thanh công");
+        }
+        return redirect()->back()->with('error', "Nap tien that bai");
     }
 }

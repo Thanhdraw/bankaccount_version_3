@@ -19,10 +19,13 @@
                     <span class="font-medium">📂 Loại tài khoản:</span>
                     <span>{{ $account->type->label() }}</span>
                 </div>
-
+                {{-- @php
+                dd($account->getCurrentBalance());
+                @endphp --}}
                 <div class="flex justify-between">
                     <span class="font-medium">💰 Số dư:</span>
-                    <span class="font-semibold text-green-600">{{ number_format($account->balance) }}₫</span>
+                    <span class="font-semibold text-green-600">{{ number_format($account->getCurrentBalance())
+                        }}₫</span>
                 </div>
 
                 <div class="flex justify-between">
@@ -90,7 +93,9 @@
 
                 <div id="tab-deposit" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">➕ Nạp tiền</h4>
-                    <form class="space-y-4">
+                    <form action="{{ route('account.deposit',$account->account_number) }}" method="POST"
+                        class="space-y-4">
+                        @csrf
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Số tiền muốn nạp</label>
                             <input type="number" name="deposit_amount"
@@ -98,7 +103,8 @@
                                 placeholder="VD: 200000">
                         </div>
                         <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Xác
-                            nhận nạp</button>
+                            nhận nạp
+                        </button>
                     </form>
 
                 </div>
@@ -154,7 +160,8 @@
                 btn.classList.add('text-gray-600', 'border-transparent');
             });
 
-            const activeBtn = [...document.querySelectorAll('.tab-btn')].find(btn => btn.innerText.includes(tabLabel(tab)));
+            const activeBtn = [...document.querySelectorAll('.tab-btn')]
+            .find(btn => btn.innerText.includes(tabLabel(tab)));
             if (activeBtn) {
                 activeBtn.classList.remove('text-gray-600', 'border-transparent');
                 activeBtn.classList.add('text-blue-600', 'border-blue-600');
@@ -170,4 +177,5 @@
             }[tab];
         }
     </script>
+    <x-alert />
 </x-app-layout>

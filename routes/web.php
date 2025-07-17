@@ -35,6 +35,9 @@ Route::prefix('account')
         Route::get('edit/{id}', [AccountController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [AccountController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
+
+        // Depost and Withdraw
+        Route::post('/deposit/{account_number}', [AccountController::class, 'deposit'])->name('deposit');
     });
 
 
