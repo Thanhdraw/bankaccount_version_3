@@ -6,6 +6,7 @@ use App\Enums\StatusAccount;
 use App\Enums\TypeAccount;
 use App\Http\Requests\CreateAccount;
 use App\Http\Requests\DepositRequest;
+use App\Http\Requests\WithdrawRequest;
 use App\Models\Account;
 use App\Services\Account\AccountService;
 use Illuminate\Http\Request;
@@ -111,5 +112,19 @@ class AccountController extends Controller
             return redirect()->back()->with('success', "Nap tien thanh công");
         }
         return redirect()->back()->with('error', "Nap tien that bai");
+    }
+
+    public function withdraw(WithdrawRequest $request, $accountNumber)
+    {
+        $validated = $request->validated();
+
+        $account = $this->accountService->withdraw(
+            $accountNumber,
+            (float) $validated['withdraw_amount']
+        );
+        if ($account) {
+            return redirect()->back()->with('success', 'Rút tiền thành cồng');
+        }
+        return redirect()->back()->with('error', 'Rút tiền thất bại');
     }
 }

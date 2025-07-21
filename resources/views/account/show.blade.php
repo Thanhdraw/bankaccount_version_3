@@ -111,7 +111,8 @@
 
                 <div id="tab-withdraw" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">➖ Rút tiền</h4>
-                    <form class="space-y-4">
+                    <form action="{{ route('account.withdraw',$account->account_number) }}" method="POST" class="space-y-4">
+                        @csrf
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Số tiền muốn rút</label>
                             <input type="number" name="withdraw_amount"

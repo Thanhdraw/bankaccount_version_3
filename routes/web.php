@@ -38,6 +38,7 @@ Route::prefix('account')
 
         // Depost and Withdraw
         Route::post('/deposit/{account_number}', [AccountController::class, 'deposit'])->name('deposit');
+         Route::post('/withdraw/{account_number}', [AccountController::class, 'withdraw'])->name('withdraw');
     });
 
 

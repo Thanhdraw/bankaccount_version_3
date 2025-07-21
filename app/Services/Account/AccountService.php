@@ -40,7 +40,7 @@ class AccountService
             DB::commit();
 
             return true;
-            
+
         } catch (\Throwable $th) {
 
             DB::rollBack();
@@ -48,4 +48,25 @@ class AccountService
             throw $th;
         }
     }
+
+    public function withdraw($accountNumber, $amount)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $account = $this->accountRepository->findAccountNumber($accountNumber);
+
+            $this->accountRepository->withdraw($account,$amount);   
+
+            DB::commit();
+
+            return true;
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+
+            throw $th;
+        }
+    }
+
 }

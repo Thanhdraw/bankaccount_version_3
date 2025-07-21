@@ -8,8 +8,6 @@ enum StatusAccount: int
     case Open = 10;
     case Block = 20;
 
-
-
     public function label(): string
     {
         return match ($this) {
