@@ -83,6 +83,10 @@ class Transaction extends Model
         return $this->transaction_type->isTransfer();
     }
 
+    public function getFormattedBalance(): string
+    {
+        return number_format((float) $this->balance, 2, ',', '.') . ' ₫';
+    }
 
     protected static function booted(): void
     {

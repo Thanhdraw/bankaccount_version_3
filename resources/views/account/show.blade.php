@@ -111,7 +111,8 @@
 
                 <div id="tab-withdraw" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">➖ Rút tiền</h4>
-                    <form action="{{ route('account.withdraw',$account->account_number) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('account.withdraw',$account->account_number) }}" method="POST"
+                        class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Số tiền muốn rút</label>
@@ -127,8 +128,43 @@
 
                 <div id="tab-history" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">📜 Lịch sử giao dịch</h4>
-                    <p class="text-gray-600">Bảng lịch sử giao dịch sẽ hiển thị ở đây.</p>
+
+                    @forelse ($histories as $item)
+                    @if ($loop->first)
+                    <div class="mt-2 overflow-x-auto">
+                        <table class="min-w-full text-sm text-left border border-gray-300">
+                            <thead class="text-gray-700 bg-gray-100">
+                                <tr>
+                                    <th class="px-4 py-2 border">#</th>
+                                    <th class="px-4 py-2 border">Loại</th>
+                                    <th class="px-4 py-2 border">Số tiền</th>
+                                    <th class="px-4 py-2 border">Ghi chú</th>
+                                    <th class="px-4 py-2 border">Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @endif
+
+                                <tr>
+                                    <td class="px-4 py-2 border">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-2 capitalize border"> {{ $item->getTypeLabel() }}</td>
+                                    <td class="px-4 py-2 text-right text-green-600 border">
+                                        {{ number_format($item->amount, 0, ',', '.') }} đ
+                                    </td>
+                                    <td class="px-4 py-2 border">{{ $item->description ?? '-' }}</td>
+                                    <td class="px-4 py-2 border">{{ $item->created_at->format('H:i d/m/Y') }}</td>
+                                </tr>
+
+                                @if ($loop->last)
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                    @empty
+                    <p class="text-gray-500">Chưa có giao dịch nào gần đây</p>
+                    @endforelse
                 </div>
+
             </div>
 
             {{-- Footer --}}

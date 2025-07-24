@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Repository\Eloquents\AccountRepository;
+use App\Repository\Eloquents\TransactionRepository;
 use App\Repository\Interfaces\AccountRepositoryInterface;
+use App\Repository\Interfaces\TransactionRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->bind(AccountRepositoryInterface::class, AccountRepository::class);
+        $this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
     }
 }

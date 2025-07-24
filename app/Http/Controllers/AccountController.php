@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\StatusAccount;
+use App\Enums\TransactionType;
 use App\Enums\TypeAccount;
 use App\Http\Requests\CreateAccount;
 use App\Http\Requests\DepositRequest;
 use App\Http\Requests\WithdrawRequest;
 use App\Models\Account;
+use App\Models\Transaction;
 use App\Services\Account\AccountService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
@@ -16,6 +18,7 @@ class AccountController extends Controller
 {
     public function __construct(
         protected Account $account,
+        protected Transaction $transaction,
         protected AccountService $accountService
     ) {
     }
@@ -33,7 +36,13 @@ class AccountController extends Controller
     {
         $account = $this->account->findOrFail($id);
 
-        return view('account.show')->with('account', $account);
+        $trasactionHistory = $this->transaction->where('account_id', $id)->get();
+
+        return view('account.show')
+
+            ->with('histories', $trasactionHistory)
+
+            ->with('account', $account);
     }
 
     public function create()

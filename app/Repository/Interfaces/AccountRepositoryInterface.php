@@ -14,4 +14,6 @@ interface AccountRepositoryInterface
     public function deposit(Account $account, float $amount);
 
     public function withdraw(Account $account, float $amount);
+
+    // public function transactionHistory(Account $account, float $amount);
 }
