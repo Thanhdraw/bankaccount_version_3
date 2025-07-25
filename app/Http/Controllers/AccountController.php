@@ -136,4 +136,9 @@ class AccountController extends Controller
         }
         return redirect()->back()->with('error', 'Rút tiền thất bại');
     }
+
+    public function accountTransaction(Request $request)
+    {
+        dd($request->all());
+    }
 }

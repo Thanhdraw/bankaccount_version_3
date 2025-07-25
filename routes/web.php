@@ -25,20 +25,23 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::prefix('account')
-    ->name('account.')
     ->middleware(['auth', 'verified'])
+    ->controller(App\Http\Controllers\AccountController::class)
+    ->name('account.')
     ->group(function () {
-        Route::get('/', [AccountController::class, 'index'])->name('index');
-        Route::get('/create', [AccountController::class, 'create'])->name('create');
-        Route::post('/store', [AccountController::class, 'store'])->name('store');
-        Route::get('/{id}', [AccountController::class, 'show'])->name('show');
-        Route::get('edit/{id}', [AccountController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [AccountController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [AccountController::class, 'delete'])->name('delete');
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('edit/{id}', 'edit')->name('edit');
+        Route::put('/update/{id}', 'update')->name('update');
+        Route::delete('/delete/{id}', 'delete')->name('delete');
 
         // Depost and Withdraw
-        Route::post('/deposit/{account_number}', [AccountController::class, 'deposit'])->name('deposit');
-         Route::post('/withdraw/{account_number}', [AccountController::class, 'withdraw'])->name('withdraw');
+        Route::post('/deposit/{account_number}', 'deposit')->name('deposit');
+        Route::post('/withdraw/{account_number}', 'withdraw')->name('withdraw');
+
+        Route::post('/transaction/{account_number}', 'accountTransaction')->name('accountTransaction');
     });
 
 

@@ -66,7 +66,9 @@
             <div id="tab-content">
                 <div id="tab-transfer" class="tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">🔁 Chuyển tiền</h4>
-                    <form class="space-y-4">
+                    <form action="{{ route('account.accountTransaction',$account->account_number) }}" class="space-y-4"
+                        method="POST">
+                        @csrf
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Số tài khoản người nhận</label>
                             <input type="text" name="receiver_account"
