@@ -24,17 +24,17 @@
                 @endphp --}}
                 <div class="flex justify-between">
                     <span class="font-medium">💰 Số dư:</span>
-                    <span class="font-semibold text-green-600">{{ number_format($account->getCurrentBalance())
-                        }}₫</span>
+                    <span
+                        class="font-semibold text-green-600">{{ number_format($account->getCurrentBalance()) }}₫</span>
                 </div>
 
                 <div class="flex justify-between">
                     <span class="font-medium">🔒 Trạng thái:</span>
                     <span>
-                        @if ($account->status)
-                        <span class="font-semibold text-green-600">Hoạt động</span>
+                        @if ($account->status->value == 10)
+                            <span class="font-semibold text-green-600">Hoạt động</span>
                         @else
-                        <span class="font-semibold text-red-500">Tạm khóa</span>
+                            <span class="font-semibold text-red-500">Tạm khóa</span>
                         @endif
                     </span>
                 </div>
@@ -66,7 +66,7 @@
             <div id="tab-content">
                 <div id="tab-transfer" class="tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">🔁 Chuyển tiền</h4>
-                    <form action="{{ route('account.accountTransaction',$account->account_number) }}" class="space-y-4"
+                    <form action="{{ route('account.accountTransaction', $account->account_number) }}" class="space-y-4"
                         method="POST">
                         @csrf
                         <div>
@@ -95,7 +95,7 @@
 
                 <div id="tab-deposit" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">➕ Nạp tiền</h4>
-                    <form action="{{ route('account.deposit',$account->account_number) }}" method="POST"
+                    <form action="{{ route('account.deposit', $account->account_number) }}" method="POST"
                         class="space-y-4">
                         @csrf
                         <div>
@@ -113,7 +113,7 @@
 
                 <div id="tab-withdraw" class="hidden tab-pane">
                     <h4 class="mb-2 text-lg font-semibold">➖ Rút tiền</h4>
-                    <form action="{{ route('account.withdraw',$account->account_number) }}" method="POST"
+                    <form action="{{ route('account.withdraw', $account->account_number) }}" method="POST"
                         class="space-y-4">
                         @csrf
                         <div>
@@ -122,7 +122,8 @@
                                 class="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-yellow-400"
                                 placeholder="VD: 150000">
                         </div>
-                        <button type="submit" class="px-4 py-2 text-white bg-yellow-500 rounded hover:bg-yellow-600">Xác
+                        <button type="submit"
+                            class="px-4 py-2 text-white bg-yellow-500 rounded hover:bg-yellow-600">Xác
                             nhận rút</button>
                     </form>
 
@@ -132,55 +133,55 @@
                     <h4 class="mb-2 text-lg font-semibold">📜 Lịch sử giao dịch</h4>
 
                     @forelse ($histories as $item)
-                    @if ($loop->first)
-                    <div class="mt-2 overflow-x-auto">
-                        <table class="min-w-full text-sm text-left border border-gray-300">
-                            <thead class="text-gray-700 bg-gray-100">
-                                <tr>
-                                    <th class="px-4 py-2 border">#</th>
-                                    <th class="px-4 py-2 border">Loại</th>
-                                    <th class="px-4 py-2 border">Số tiền</th>
-                                    <th class="px-4 py-2 border">Ghi chú</th>
-                                    <th class="px-4 py-2 border">Thời gian</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @endif
+                        @if ($loop->first)
+                            <div class="mt-2 overflow-x-auto">
+                                <table class="min-w-full text-sm text-left border border-gray-300">
+                                    <thead class="text-gray-700 bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-2 border">#</th>
+                                            <th class="px-4 py-2 border">Loại</th>
+                                            <th class="px-4 py-2 border">Số tiền</th>
+                                            <th class="px-4 py-2 border">Ghi chú</th>
+                                            <th class="px-4 py-2 border">Thời gian</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        @endif
 
-                                <tr>
-                                    <td class="px-4 py-2 border">{{ $loop->iteration }}</td>
-                                    <td class="px-4 py-2 capitalize border"> {{ $item->getTypeLabel() }}</td>
-                                    <td class="px-4 py-2 text-right text-green-600 border">
-                                        {{ number_format($item->amount, 0, ',', '.') }} đ
-                                    </td>
-                                    <td class="px-4 py-2 border">{{ $item->description ?? '-' }}</td>
-                                    <td class="px-4 py-2 border">{{ $item->created_at->format('H:i d/m/Y') }}</td>
-                                </tr>
+                        <tr>
+                            <td class="px-4 py-2 border">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-2 capitalize border"> {{ $item->getTypeLabel() }}</td>
+                            <td class="px-4 py-2 text-right text-green-600 border">
+                                {{ number_format($item->amount, 0, ',', '.') }} đ
+                            </td>
+                            <td class="px-4 py-2 border">{{ $item->description ?? '-' }}</td>
+                            <td class="px-4 py-2 border">{{ $item->created_at->format('H:i d/m/Y') }}</td>
+                        </tr>
 
-                                @if ($loop->last)
+                        @if ($loop->last)
                             </tbody>
-                        </table>
-                    </div>
-                    @endif
-                    @empty
-                    <p class="text-gray-500">Chưa có giao dịch nào gần đây</p>
-                    @endforelse
+                            </table>
                 </div>
-
+                @endif
+            @empty
+                <p class="text-gray-500">Chưa có giao dịch nào gần đây</p>
+                @endforelse
             </div>
 
-            {{-- Footer --}}
-            <div class="mt-8 text-right">
-                <button wire:click="closeModal"
-                    class="px-5 py-2 text-white transition bg-gray-700 rounded-lg hover:bg-gray-800">
-                    Đóng
-                </button>
-                <a href="{{ route('account.index') }}"
-                    class="px-5 py-2 text-white transition bg-gray-700 rounded-lg hover:bg-gray-800">
-                    Quay về
-                </a>
-            </div>
         </div>
+
+        {{-- Footer --}}
+        <div class="mt-8 text-right">
+            <button wire:click="closeModal"
+                class="px-5 py-2 text-white transition bg-gray-700 rounded-lg hover:bg-gray-800">
+                Đóng
+            </button>
+            <a href="{{ route('account.index') }}"
+                class="px-5 py-2 text-white transition bg-gray-700 rounded-lg hover:bg-gray-800">
+                Quay về
+            </a>
+        </div>
+    </div>
     </div>
 
     {{-- JavaScript tab logic --}}
@@ -200,7 +201,7 @@
             });
 
             const activeBtn = [...document.querySelectorAll('.tab-btn')]
-            .find(btn => btn.innerText.includes(tabLabel(tab)));
+                .find(btn => btn.innerText.includes(tabLabel(tab)));
             if (activeBtn) {
                 activeBtn.classList.remove('text-gray-600', 'border-transparent');
                 activeBtn.classList.add('text-blue-600', 'border-blue-600');
@@ -213,7 +214,7 @@
                 deposit: 'Nạp',
                 withdraw: 'Rút',
                 history: 'Lịch'
-            }[tab];
+            } [tab];
         }
     </script>
     <x-alert />

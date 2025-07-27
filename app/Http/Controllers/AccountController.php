@@ -5,21 +5,28 @@ namespace App\Http\Controllers;
 use App\Enums\StatusAccount;
 use App\Enums\TransactionType;
 use App\Enums\TypeAccount;
+use App\Http\Requests\AccountTransaction;
 use App\Http\Requests\CreateAccount;
 use App\Http\Requests\DepositRequest;
 use App\Http\Requests\WithdrawRequest;
 use App\Models\Account;
 use App\Models\Transaction;
+use App\Repository\Eloquents\AccountRepository;
+use App\Repository\Eloquents\TransactionRepository;
 use App\Services\Account\AccountService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
+use Exception;
 
+use Illuminate\Support\Facades\DB;
 class AccountController extends Controller
 {
     public function __construct(
         protected Account $account,
         protected Transaction $transaction,
-        protected AccountService $accountService
+        protected AccountService $accountService,
+        protected AccountRepository $accountRepository,
+        protected TransactionRepository $transactionRepository,
     ) {
     }
 
@@ -137,8 +144,18 @@ class AccountController extends Controller
         return redirect()->back()->with('error', 'Rút tiền thất bại');
     }
 
-    public function accountTransaction(Request $request)
+    public function accountTransaction(AccountTransaction $request, $accountNumber)
     {
-        dd($request->all());
+        $data = $request->validated();
+
+        $result = $this->accountService->accountTransaction($data, $accountNumber);
+
+        if ($result['success']) {
+            
+            return redirect()->back()->with('success', $result['message']);
+        }
+        return redirect()->back()->with('error', $result['message']);
+
     }
+
 }

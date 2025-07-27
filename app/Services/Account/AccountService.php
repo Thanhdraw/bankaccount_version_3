@@ -109,4 +109,75 @@ class AccountService
         }
     }
 
+    public function accountTransaction(array $data, $accountNumber)
+    {
+
+        if ($accountNumber == $data['receiver_account']) {
+            return redirect()->back()->with('error', 'Bạn không thể chuyển tiền cho chính mình!');
+        }
+
+        $sender = $this->accountRepository->findAccountNumber($accountNumber);
+        $reciever = $this->accountRepository->findAccountNumber($data['receiver_account']);
+
+        if (!$reciever) {
+            return redirect()->back()->with('error', 'Tài khoản người nhận không tồn tại.');
+        }
+
+        if ($sender->balance < $data['amount']) {
+            return redirect()->back()->with('error', 'Số dư không đủ để thực hiện giao dịch.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $balanceBefore = $sender->balance;
+
+            $sender->balance -= $data['amount'];
+            $sender->save();
+
+            $balanceAfter = $sender->balance;
+
+
+
+
+            $reciever->balance += $data['amount'];
+            $reciever->save();
+
+
+            $this->transactionRepository->createTransaction([
+                'account_id' => $sender->id,
+                'transaction_type' => TransactionType::TransferOut,
+                'amount' => $data['amount'],
+                'balance_before' => $balanceBefore,
+                'balance_after' => $balanceAfter,
+                'description' => 'Chuyển khoản',
+                'reference_account_id' => $reciever->id,
+
+            ]);
+            $this->transactionRepository->createTransaction([
+                'account_id' => $reciever->id,
+                'transaction_type' => TransactionType::TransferIn,
+                'amount' => $data['amount'],
+                'balance_before' => $reciever->balance - $data['amount'],
+                'balance_after' => $reciever->balance,
+                'description' => 'Chuyển khoản',
+                'reference_account_id' => $sender->id,
+
+            ]);
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Chuyển khoản thành công.',
+            ];
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $th->getMessage(),
+            ];
+        }
+    }
+
 }
